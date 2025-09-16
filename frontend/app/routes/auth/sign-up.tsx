@@ -2,7 +2,7 @@ import { signUpSchema } from "@/lib/schema";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { int, z } from "zod";
+import { number, z } from "zod";
 import {
   Card,
   CardContent,
@@ -30,8 +30,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
+import { userSignUpMutation } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
-type SignUpFormData = z.infer<typeof signUpSchema>;
+export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
   const form = useForm<SignUpFormData>({
@@ -47,8 +49,20 @@ const SignUp = () => {
     },
   });
 
+  const { mutate, isPending } = userSignUpMutation();
+
   const handleOnsubmit = (values: SignUpFormData) => {
-    console.log(values);
+    mutate(values, {
+      onSuccess: () => {
+        toast.success('')
+
+      },
+      onError: (error: any) =>{
+        const errorMessage = error.response.data.message || 'An error occurred';
+        console.log(error);
+        toast.error(error.message);
+      }
+    })
   };
 
   return (
@@ -89,7 +103,7 @@ const SignUp = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-2x1 font-bold shadow-x1">
+                        <FormLabel className="text-2x1 font-bold shadow-x1 text-muted-foreground">
                           Email
                         </FormLabel>
                         <FormControl className="text-muted-foreground">
@@ -147,8 +161,8 @@ const SignUp = () => {
                     )}
                   />
 
-                  <Button type="submit" className="w-full py-2 sm:py-3 text-sm sm:text-base">
-                    Sign Up
+                  <Button type="submit" className="w-full py-2 sm:py-3 text-sm sm:text-base" disabled={isPending}>
+                    {isPending ? 'Signing up...' : 'Sign up'}
                   </Button>
                 </form>
               </Form>
@@ -234,7 +248,7 @@ const SignUp = () => {
                           </FormLabel>
                           <FormControl className="text-muted-foreground">
                             <Input
-                                className="text-sm sm:text-base w-full"
+                              className="text-sm sm:text-base w-full"
                               type="text"
                               placeholder="Ingenieria de Sistemas"
                               {...field}
