@@ -10,7 +10,7 @@ const userSchema = new Schema(
       lowercase: true,
     },
     password: { type: String, required: true, select: false },
-    name: { type: String, required:true, trim: trim},
+    name: { type: String, required:true, trim: true},
     profilePicture: { type:String },
     university: {type: String, required: true},
     career: { type: String, required: true},
