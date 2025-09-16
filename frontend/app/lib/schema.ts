@@ -10,9 +10,9 @@ export const signUpSchema = z.object({
     password: z.string().min(8, 'Password must be 8 characters'),
     confirmPassword: z.string().min(8, 'Password must be 8 characters'),
     name: z.string().min(3, 'Name must be at least 3 characters'),
-    university: z.string().max(50, 'University cannot exceed 50 characters').nonempty,
-    career: z.string().max(50, 'Career cannot exceed 50 characters').nonempty,
-    currentSemester: z.int().min(1).max(12),
+    university: z.string().min(1, 'University is required').max(50, 'University cannot exceed 50 characters'),
+    career: z.string().min(1, 'Career is required').max(50, 'Career cannot exceed 50 characters'),
+    currentSemester: z.number().min(1, 'Semester is required').max(12),
 }).refine((data) => data.password === data.confirmPassword,{
     path: ['confirmPassword'],
     message:'Password do not match',
