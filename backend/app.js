@@ -1,28 +1,37 @@
-import cors from 'cors'
-import dotenv from 'dotenv'
-import express from 'express'
-import mongoose from 'mongoose'
-import morgan from "morgan"
+//? Dependencies
+
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+
+//? Files
+
+import routes from './routes/app.js';
 
 //? Enable Dotenv
 dotenv.config()
 
 //? Initial Configs
+
 const PORT = process.env.PORT || 5000;
-
-
 const app = express();
 //? Enable incoming JSON data
 app.use(express.json());
 
 //? Enable CORS
-app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders:['Content-type', "Authorization"],
-}));
+
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL,
+        methods: ["GET", "POST", "DELETE", "PUT"],
+        allowedHeaders:['Content-type', "Authorization"],
+    })
+);
 
 //? Authenticate DB
+
 app.use(morgan('dev'));
 
 mongoose
@@ -37,8 +46,9 @@ mongoose
 
 
 //? Routes v1
+
 //? root route '/'
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     res.status(200).json({
         status: 200,
         message: 'OK!',
@@ -50,6 +60,9 @@ app.get('/', (req, res) => {
 
 //? Definimos prefijo rutas
 
+//? http:localhost:500/api/v1/
+app.use('/api/v1', routes);
+
 //? error midleware
 
 app.use((err, req, res, next) => {
@@ -58,6 +71,7 @@ app.use((err, req, res, next) => {
 });
 
 //? not found middleware
+
 app.use((req, res) => {
     res.status(404).json({
         message: 'Not found',
