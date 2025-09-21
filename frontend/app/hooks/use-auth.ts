@@ -4,6 +4,14 @@ import { useMutation } from "@tanstack/react-query"
 
 export const userSignUpMutation = () => {
     return useMutation({
-        mutationFn: (data: SignUpFormData) => postData('/auth/register', data),
+        mutationFn: (data: SignUpFormData) =>
+            postData('/auth/register', data),
+    });
+};
+
+export const useVerifyEmailMutation = () => {
+    return useMutation({
+        mutationFn: (data: { token:string }) =>
+            postData('/auth/verify-email', data),
     });
 };
