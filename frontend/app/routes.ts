@@ -12,7 +12,7 @@ export default [
     ]),
     layout("routes/dashboard/dashboard-layout.tsx", [
         route("dashboard","routes/dashboard/app.tsx"),
-
+        route("workspaces", "routes/dashboard/workspaces/app.tsx" )
     ]),
 
 ] satisfies RouteConfig;
