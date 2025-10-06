@@ -20,7 +20,7 @@ export interface Workspace {
     members: {
         user: User;
         role: 'admin' | 'member' | 'owner' | 'viewer';
-        joinetAt: Date;
+        joinedAt: Date;
     }[];
     createdAt: Date;
     updatedAt: Date;
@@ -47,7 +47,7 @@ export interface Project {
     members: {
         user: User;
         role: 'admin' | 'member' | 'owner' | 'viewer';
-        joinetAt: Date;
+        joinedAt: Date;
     }[];
     // tags: string;
     createdBy: User;

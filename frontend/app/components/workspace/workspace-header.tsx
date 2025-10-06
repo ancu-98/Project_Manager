@@ -10,7 +10,7 @@ interface WorkspaceHeaderProps {
     _id: string;
     user: User;
     role: "admin" | "member" | "owner" | "viewer";
-    joinetAt: Date;
+    joinedAt: Date;
   }[];
   onCreateProject: () => void;
   onInviteMember: () => void;
@@ -57,7 +57,7 @@ export const WorkspaceHeader = ({
       </div>
 
       {members.length > 0 && (
-        <div className="flex items-center gap-2 mt-8">
+        <div className="flex items-center gap-2 mt-4">
           <span className="text-sm text-muted-foreground">Members</span>
 
           <div className="flex space-x-2">

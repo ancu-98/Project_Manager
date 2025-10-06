@@ -13,7 +13,7 @@ const createWorkspace = async (req, res) => {
         {
           user: req.user._id,
           role: "owner",
-          joinetAt: new Date(),
+          joinedAt: new Date(),
         },
       ],
     });
