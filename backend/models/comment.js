@@ -1,6 +1,6 @@
-import { model, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const commentSchema = new Schema(
+const commentSchema = new mongoose.Schema(
   {
     text: {
       type: String,
@@ -8,18 +8,18 @@ const commentSchema = new Schema(
       trim: true,
     },
     activity: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Activity",
       required: true,
     },
     author: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     mentions: [
       {
-        user: { type: Schema.Types.ObjectId, ref: "User" },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         offset: { type: Number },
         length: { type: Number },
       },
@@ -27,7 +27,7 @@ const commentSchema = new Schema(
     reactions: [
       {
         emoji: { type: String },
-        user: { type: Schema.Types.ObjectId, ref: "User" },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       },
     ],
     attachments: [
@@ -37,7 +37,7 @@ const commentSchema = new Schema(
         fileType: { type: String },
         fileSize: { type: Number },
         uploadedBy: {
-          type: Schema.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: "User",
           required: true,
         },
@@ -49,6 +49,6 @@ const commentSchema = new Schema(
   { timestamps: true }
 );
 
-const Comment = model("Comment", commentSchema);
+const Comment = mongoose.model("Comment", commentSchema);
 
 export default Comment;

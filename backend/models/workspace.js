@@ -1,6 +1,6 @@
-import {Schema, model} from "mongoose";
+import mongoose from "mongoose";
 
-const workspaceModel = new Schema({
+const workspaceModel = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -9,13 +9,13 @@ const workspaceModel = new Schema({
     description: { type: String, trim: true },
     color: { type: String, default: "#FF5733" },
     owner: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
     members: [
         {
-            user: {type: Schema.Types.ObjectId, ref:'User'},
+            user: {type: mongoose.Schema.Types.ObjectId, ref:'User'},
             role: {
                 type: String,
                 enum: ['owner', 'member', 'admin', 'viewer'],
@@ -24,10 +24,10 @@ const workspaceModel = new Schema({
             joinedAt: {type: Date, default: Date.now}
         },
     ],
-    projects: [{ type: Schema.Types.ObjectId, ref: 'Project'}]
+    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project'}]
 
 },{ timestamps: true });
 
-const Workspace = model('Workspace', workspaceModel);
+const Workspace = mongoose.model('Workspace', workspaceModel);
 
 export default  Workspace;

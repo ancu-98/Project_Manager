@@ -1,9 +1,9 @@
-import { model, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const sprintSchema = new Schema(
+const sprintSchema = new  mongoose.Schema(
   {
     backlog: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Backlog",
       required: true,
     },
@@ -20,13 +20,13 @@ const sprintSchema = new Schema(
     storyPointsToDo: { type: Number, min: 0 },
     storyPointsInProgress: { type: Number, min: 0 },
     storyPointsDone: { type: Number, min: 0 },
-    activities: [{ type: Schema.Types.ObjectId, ref: "Activity" }],
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    activities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     isArchived: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-const Sprint = model("Sprint", sprintSchema);
+const Sprint = mongoose.model("Sprint", sprintSchema);
 
 export default Sprint;

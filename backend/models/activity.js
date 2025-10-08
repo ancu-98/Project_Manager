@@ -1,6 +1,6 @@
-import { model, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const activitySchema = new Schema(
+const activitySchema = new mongoose.Schema(
   {
     typeOf: {
         type: String,
@@ -10,9 +10,9 @@ const activitySchema = new Schema(
     },
     title: { type: String, required: true, trim: true },
     description: { type: String, trim: true },
-    relatedActivities: [{ type: Schema.Types.ObjectId, ref: "Activity" }],
+    relatedActivities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
     backlog: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Backlog",
       required: true,
     },
@@ -26,12 +26,12 @@ const activitySchema = new Schema(
       enum: ["Low", "Medium", "High"],
       default: "Medium",
     },
-    principal: { type: Schema.Types.ObjectId, ref: "Activity" },
-    assignees: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    watchers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    principal: { type: mongoose.Schema.Types.ObjectId, ref: "Activity" },
+    assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    watchers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     dueDate: { type: Date },
     completedAt: { type: Date },
-    sprint: { type: Schema.Types.ObjectId, ref: "Sprint" },
+    sprint: { type: mongoose.Schema.Types.ObjectId, ref: "Sprint" },
     storyPointEstimate: { type: Number, min: 0 },
     estimatedHours: { type: Number, min: 0 },
     actualHours: { type: Number, min: 0 },
@@ -52,7 +52,7 @@ const activitySchema = new Schema(
         },
       },
     ],
-    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     attachments: [
       {
         fileName: { type: String, required: true },
@@ -60,19 +60,19 @@ const activitySchema = new Schema(
         fileType: { type: String },
         fileSize: { type: Number },
         uploadedBy: {
-          type: Schema.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: "User",
           required: true,
         },
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     isArchived: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-const Activity = model("Activity", activitySchema);
+const Activity = mongoose.model("Activity", activitySchema);
 
 export default Activity;
