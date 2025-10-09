@@ -47,7 +47,6 @@ export interface Project {
     members: {
         user: User;
         role: 'admin' | 'member' | 'owner' | 'viewer';
-        joinedAt: Date;
     }[];
     // tags: string;
     createdBy: User;
@@ -157,4 +156,12 @@ export interface Comment {
     attachments?: Attachment[],
     isEdited: boolean,
 }
+
+export interface MembersProps {
+    _id: string;
+    user: User;
+    role: 'admin' | 'member' | 'owner' | 'viewer';
+    joinedAt: Date;
+}
+
 
