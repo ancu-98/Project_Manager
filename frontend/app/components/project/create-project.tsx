@@ -172,17 +172,15 @@ export const CreateProjectDialog = ({
                           <button
                             // variant={'outline'}
                             className={
-                              "flex flex-row w-full" +
-                              (!field.value ? "text-muted-foreground" : "")
+                              "flex flex-row items-center w-full h-8 px-4 py-2 text-xs font-medium border border-input rounded-md bg-background hover:bg-accent hover:text-accent-foreground"
+                              + (!field.value ? "text-muted-foreground" : "")
                             }
                           >
                             <CalendarIcon className="size-4 mr-2" />
                             {field.value ? (
                               format(field.value, "PPPP")
                             ) : (
-                              <span className="text-sm font-medium">
-                                Pick a date
-                              </span>
+                              <span>Pick a date</span>
                             )}
                           </button>
                         </PopoverTrigger>
@@ -217,10 +215,8 @@ export const CreateProjectDialog = ({
                           <button
                             // variant={'outline'}
                             className={
-                              "flex flex-row items-center w-full h-10 px-4 py-2 text-sm font-medium border border-input rounded-md bg-background hover:bg-accent hover:text-accent-foreground" +
-                              // + "hover:bg-accent hover:text-accent-foreground"
-                              // + "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                              (!field.value ? "text-muted-foreground" : "")
+                              "flex flex-row items-center w-full h-8 px-4 py-2 text-xs font-medium border border-input rounded-md bg-background hover:bg-accent hover:text-accent-foreground"
+                              + (!field.value ? "text-muted-foreground" : "")
                             }
                           >
                             <CalendarIcon className="size-4 mr-2" />
@@ -277,7 +273,7 @@ export const CreateProjectDialog = ({
                     <FormControl>
                       <Popover>
                         <PopoverTrigger asChild>
-                          <button className="w-full text-left font-normal min-h-11">
+                          <button className="w-full h-10 px-4 py-2 text-sm text-start font-medium border border-input rounded-md bg-background hover:bg-accent hover:text-accent-foreground">
                             {selectedMembers.length === 0 ? (
                               <span className="text-muted-foreground">
                                 Select Members

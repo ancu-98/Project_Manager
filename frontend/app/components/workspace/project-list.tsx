@@ -17,7 +17,7 @@ export const ProjectList = ({
   return (
     <div>
       <h3 className="text-x1 font-medium mb-4">Projects</h3>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {projects.length === 0 ? (
           <NoDataFound
             title="No projects found"

@@ -62,7 +62,7 @@ export const ProjectCard = ({
 
               {project.dueDate && (
                 <div className="flex items-center text-xs text-muted-foreground">
-                  <CalendarDays className="w-4 h-4" />
+                  <CalendarDays className="w-4 h-4 mr-1" />
                   <span>{format(project.dueDate, "MMM d, yyyy")}</span>
                 </div>
               )}
