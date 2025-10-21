@@ -59,13 +59,16 @@ export interface Backlog {
     _id: string;
     project: Project;
     activities?: Activity[];
-    sprint?: Sprint[];
+    sprints?: Sprint[];
+    finishedSprints?: Sprint[];
     storyPointsToDo?: number;
     storyPointsInProgress?: number;
     storyPointsDone?: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-export type sprintDuration = ["1 week", "2 weeks", "3 weeks", "4 weeks", "customized"]
+export type sprintDuration = "1 week" | "2 weeks" | "3 weeks" | "4 weeks" | "customized";
 
 export interface Sprint {
     _id: string;
@@ -80,17 +83,28 @@ export interface Sprint {
     storyPointsDone?: number;
     activities?: Activity[];
     createdBy: User;
+    startedBy: User;
+    isStarted: boolean;
+    finishedBy: User;
+    isFinished: boolean;
     isArchived: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export type ActivityStatus = 'To Do' | 'In Progress' | 'Done';
 export type ActivityPriority = 'High' | 'Medium' | 'Low';
+export enum ProjectMemberRole {
+    MANAGER = 'manager',
+    CONTRIBUTOR = 'contributor',
+    VIEWER = 'viewer'
+}
 
 export enum TypeOfActivity {
     EPIC = 'Epic',
-    HISTORY = 'History',
+    STORY = 'Story',
     TASK = 'Task',
-    SUBTASKS = 'Subtasks'
+    SUBTASK = 'Subtask'
 }
 
 export interface Activity {
@@ -100,15 +114,17 @@ export interface Activity {
     description?: string;
     relatedActivities?: Activity[];
     backlog: Backlog;
+    isOnBacklog: boolean;
     status: ActivityStatus;
     priority: ActivityPriority;
     principal: Activity ;
-    assignee: User | string;
+    assignee: User;
     assignees: User[];
     watchers?: User | string;
     dueDate: Date;
     completedAt: Date;
     sprint?: Sprint ;
+    isOnSprint: boolean;
     storyPointEstimate: number;
     estimatedHours: number ;
     actualHours: number ;
