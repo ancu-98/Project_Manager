@@ -178,7 +178,7 @@ export const CreateProjectDialog = ({
                           >
                             <CalendarIcon className="size-4 mr-2" />
                             {field.value ? (
-                              format(field.value, "PPPP")
+                              format(new Date(field.value), "PPPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
@@ -221,7 +221,7 @@ export const CreateProjectDialog = ({
                           >
                             <CalendarIcon className="size-4 mr-2" />
                             {field.value ? (
-                              format(field.value, "PPPP")
+                              format(new Date(field.value), "PPPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
@@ -286,11 +286,13 @@ export const CreateProjectDialog = ({
 
                                 return `${member?.user.name}(${member?.role})`;
                               })
+                              .join(', ')
                             ) : (
                               `${selectedMembers.length} members selected`
                             )}
                           </button>
                         </PopoverTrigger>
+
                         <PopoverContent
                           className="w-full max-w-60 overflow-y-auto"
                           align="start"

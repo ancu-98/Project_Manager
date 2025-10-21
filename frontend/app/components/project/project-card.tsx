@@ -7,11 +7,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { getTaskStatusColor } from "@/lib/app";
+import { getActivityStatusColor } from "@/lib/app";
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 import { format } from "date-fns";
 import { CalendarDays } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 interface ProjectCardProps {
   project: Project;
@@ -25,19 +26,19 @@ export const ProjectCard = ({
   workspaceId,
 }: ProjectCardProps) => {
   return (
-    <Link to={`/dashboard/workspaces/${workspaceId}/projects/${project._id}`}>
+    <Link to={`/workspaces/${workspaceId}/projects/${project._id}/backlog`}>
       <Card className="transition-all duration-300 hover:shadow-md hover:translate-y-1">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>{project.title}</CardTitle>
-            <span
+            <Badge
               className={cn(
                 "text-xs rounded-full",
-                getTaskStatusColor(project.status)
+                getActivityStatusColor(project.status)
               )}
             >
               {project.status}
-            </span>
+            </Badge>
           </div>
           <CardDescription className="line-clamp-2">
             {project.description || "No description"}
