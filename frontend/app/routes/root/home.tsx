@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "TaskHub" },
-    { name: "description", content: "Welcome to TaskHub!" },
+    { title: "ProjectHub" },
+    { name: "description", content: "Welcome to ProjectHub!" },
   ];
 }
 
