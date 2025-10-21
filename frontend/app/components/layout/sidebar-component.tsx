@@ -96,7 +96,7 @@ export const SideBarComponent = ({
         </Button>
       </div>
 
-      <ScrollArea>
+      <ScrollArea className="felx-1 pz-3 py-2" >
         <SidebarNav
           items={navItems}
           isCollapsed={isCollapsed}
