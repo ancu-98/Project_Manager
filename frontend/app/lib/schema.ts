@@ -51,3 +51,21 @@ export const projectSchema = z.object({
         })
     ).optional(),
 });
+
+export const createActivitySchema = z.object({
+    typeOf: z.enum(['Epic', 'Story', 'Task', 'Subtask']),
+    title: z.string().min(1, 'Activity title is required'),
+    description: z.string().optional(),
+    status: z.enum(['To Do', 'In Progress', 'Done']),
+    priority: z.enum(['Low', 'Medium', 'High']),
+    dueDate: z.string().min(1, 'Due date is required'),
+    assignees: z.array(z.string()).min(1,'At least one assignee is requires'),
+});
+
+export const updateStartSprintSchema = z.object({
+    sprintName: z.string().min(1, 'Sprint name is required'),
+    duration: z.enum(["1 week", "2 weeks", "3 weeks", "4 weeks", "customized"]),
+    startDay: z.string().min(1, 'Start date is required'),
+    finishDay: z.string().min(1, 'Start date is required'),
+    sprintGoal: z.string().optional(),
+})
