@@ -4,7 +4,7 @@ const activitySchema = new mongoose.Schema(
   {
     typeOf: {
         type: String,
-        enum: ['Epic','History', 'Task', 'Subtask'],
+        enum: ['Epic','Story', 'Task', 'Subtask'],
         default: 'Task',
         required: true,
     },
@@ -16,6 +16,7 @@ const activitySchema = new mongoose.Schema(
       ref: "Backlog",
       required: true,
     },
+    isOnBacklog: {type: Boolean, default: true},
     status: {
       type: String,
       enum: ["To Do", "In Progress", "Review", "Done"],
@@ -32,7 +33,8 @@ const activitySchema = new mongoose.Schema(
     dueDate: { type: Date },
     completedAt: { type: Date },
     sprint: { type: mongoose.Schema.Types.ObjectId, ref: "Sprint" },
-    storyPointEstimate: { type: Number, min: 0 },
+    isOnSprint: {type: Boolean, default: false},
+    storyPointsEstimate: { type: Number, min: 0 },
     estimatedHours: { type: Number, min: 0 },
     actualHours: { type: Number, min: 0 },
     tags: [{ type: String }],
