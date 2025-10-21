@@ -6,10 +6,11 @@ import { CreateWorkspace } from "@/components/workspace/create-workspace";
 import { WorkspaceAvatar } from "@/components/workspace/workspace-avatar";
 import { useGetWorkspacesQuery } from "@/hooks/use-workspace";
 import type { Workspace } from "@/types/app";
-import { Loader, PlusCircle, Users } from "lucide-react";
+import { PlusCircle, Users } from "lucide-react";
 import { useState } from "react";
-import { Link, useLoaderData } from "react-router";
+import { Link } from "react-router";
 import { format } from 'date-fns'
+import { Loader } from "@/components/loader";
 
 const Workspaces = () => {
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
@@ -19,7 +20,7 @@ const Workspaces = () => {
   };
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader/>;
   }
 
   return (
@@ -71,9 +72,10 @@ const WorkspaceCard = ({ workspace }: {workspace: Workspace}) => {
           <div className="flex items-center justify-between" >
             <div className="flex gap-2" >
               <WorkspaceAvatar name={workspace.name} color={workspace.color}/>
+
               <div>
                 <CardTitle>{workspace.name}</CardTitle>
-                <span>
+                <span className="text-xs text-muted-foreground" >
                   Created at {format(workspace.createdAt, "MMM d, yyyy h:mm a")}
                 </span>
               </div>
