@@ -1,5 +1,6 @@
 import Workspace from "../models/workspace.js";
 import Project from '../models/project.js'
+import Backlog from "../models/backlog.js";
 
 const createWorkspace = async (req, res) => {
   try {
@@ -46,9 +47,8 @@ const getWorkspaceDetails = async (req, res) => {
   try {
     const { workspaceId } = req.params;
 
-    const workspace = await Workspace.findOne({
+    const workspace = await Workspace.findById({
       _id: workspaceId,
-      'members.user': req.user._id,
     }).populate('members.user', 'name email profilePicture');
 
     if (!workspace) {
@@ -83,14 +83,12 @@ const getWorkspaceProjects = async (req, res) => {
     const projects = await Project.find({
       workspace: workspaceId,
       isArchived: false,
-      // 'members.user': req.user._id
-      // members: { $in: [req.user._id] },
+      members: { $elemMatch:{user: req.user._id}}
     })
-      // .populate('backlog.activities', 'status')
-      .sort({ createdAt: -1 });
+    .populate('backlog.activities', 'status')
+    .sort({ createdAt: -1 });
 
-    res.status(200).json({projects, workspace});
-
+    res.status(200).json({ projects, workspace });
   } catch (error) {
     console.log(error);
     res.status(500).json({message: 'Internal Server error'})
