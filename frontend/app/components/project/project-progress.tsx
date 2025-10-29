@@ -5,28 +5,31 @@ import { Badge } from "../ui/badge";
 
 interface ProjectProgressProps {
   backlogSprints: Sprint[];
+  backlogActivities: Activity[];
 }
 
 const ProjectProgress = ({
-  backlogSprints
+  backlogSprints,
+  backlogActivities
 }: ProjectProgressProps) => {
-
   // Extraer todas las actividades de todos los sprints
   const allSprintActivities = backlogSprints.flatMap(
     (sprint) => sprint.activities || []
   );
 
-  const projectProgress = getProjectProgress(allSprintActivities);
+  const allProjectActivities = [...allSprintActivities, ...backlogActivities]
 
-  const toDoCount = allSprintActivities.filter(
+  const projectProgress = getProjectProgress(allProjectActivities);
+
+  const toDoCount = allProjectActivities.filter(
     (activity) => activity.status === "To Do"
   ).length;
 
-  const inProgressCount = allSprintActivities.filter(
+  const inProgressCount = allProjectActivities.filter(
     (activity) => activity.status === "In Progress"
   ).length;
 
-  const doneCount = allSprintActivities.filter(
+  const doneCount = allProjectActivities.filter(
     (activity) => activity.status === "Done"
   ).length;
 

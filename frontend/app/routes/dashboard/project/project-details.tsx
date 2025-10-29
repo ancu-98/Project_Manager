@@ -58,6 +58,7 @@ const ProjectDetails = () => {
 
             <ProjectProgress
               backlogSprints={data.backlog.sprints as any}
+              backlogActivities={data.backlog.activities as any}
             />
 
           </div>
