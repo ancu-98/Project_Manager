@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Bell, PlusCircle } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
 import { WorkspaceAvatar } from "../workspace/workspace-avatar";
 
 interface HeaderProps {
@@ -18,8 +18,23 @@ export const Header = ({
   selectedWorkspace,
   onCreateWorkSpace,
 }: HeaderProps) => {
+    const navigate = useNavigate();
+
     const { user, logout } = useAuth();
     const { workspaces } = useLoaderData() as { workspaces: Workspace[] };
+    const inOnWorkspacePage = useLocation().pathname.includes('/workspace');
+
+    const handleOnClick = (workspace: Workspace) => {
+        onWorkspaceSelected(workspace);
+        const location = window.location;
+
+        if (inOnWorkspacePage) {
+            navigate(`/workspaces/${workspace._id}`);
+        } else {
+            const basePath = location.pathname;
+            navigate(`${basePath}?workspaceId=${workspace._id}`);
+        }
+    }
 
   return (
     <div className="bg-blackground sticky top-0 z-40 border-b" >
@@ -57,7 +72,7 @@ export const Header = ({
                             workspaces.map((ws) => (
                                 <DropdownMenuItem
                                     key={ws._id}
-                                    onClick={() => onWorkspaceSelected(ws)}
+                                    onClick={() => handleOnClick(ws)}
                                 >
                                     {
                                     ws.color && (

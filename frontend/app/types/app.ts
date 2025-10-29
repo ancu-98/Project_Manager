@@ -120,7 +120,7 @@ export interface Activity {
     principal: Activity ;
     assignee: User;
     assignees: User[];
-    watchers?: User | string;
+    watchers?: User[];
     dueDate: Date;
     completedAt: Date;
     sprint?: Sprint ;
@@ -155,24 +155,6 @@ export interface Attachment {
     uploadedAt: Date ;
 }
 
-export interface Comment {
-    _id: string ;
-    text: string ;
-    activity: Activity ;
-    author: User ;
-    mentions?: {
-        user: User,
-        offset: number,
-        length: number ,
-    }[],
-    reactions?:{
-        emoji: string,
-        user: User
-    }[],
-    attachments?: Attachment[],
-    isEdited: boolean,
-}
-
 export interface MembersProps {
     _id: string;
     user: User;
@@ -180,4 +162,96 @@ export interface MembersProps {
     joinedAt: Date;
 }
 
+export type ResourceType =
+    | 'Activity'
+    | 'Sprint'
+    | 'Project'
+    | 'Workspace'
+    | 'Comment'
+    | 'User';
 
+export type ActionType =
+    | "created-sprint"
+    | "updated-sprint"
+    | "started-sprint"
+    | "finished-sprint"
+    | "created_activity"
+    | "updated_activity"
+    | "created_subtask"
+    | "updated_subtask"
+    | "completed_activity"
+    | "created_project"
+    | "updated_project"
+    | "completed_project"
+    | "created_workspace"
+    | "updated_workspace"
+    | "added_comment"
+    | "added_member"
+    | "removed_member"
+    | "joined_workspace"
+    | "transferred_workspace_ownership"
+    | "added_attachment"
+
+export interface HistoryLog {
+    _id: string;
+    user: User;
+    action: ActionType ;
+    resourceType: ResourceType ;
+    resourceId: string;
+    details: any;
+    createdBy: Date;
+}
+
+export interface CommentReaction {
+    emoji: string;
+    user: User;
+}
+
+
+export interface Comment {
+    _id: string;
+    author: User;
+    text: string;
+    createdAt: Date;
+    reactions?: CommentReaction[];
+    attachments?: {
+        fileName: string;
+        fileUrl: string;
+        fileType?: string;
+        fileSize?: number;
+    }[];
+}
+
+export interface StatsCardProps {
+    totalProjects: number,
+    totalActivities: number,
+    totalProjectsInProgress: number,
+    totalActivitiesToDo: number,
+    totalActivitiesInProgress: number,
+    totalActivitiesCompleted: number,
+}
+
+export interface ActivityTrendData {
+    name: string;
+    completed: string;
+    inProgress: number;
+    toDo: number;
+}
+
+export interface ActivityPriorityData {
+    name: string;
+    value: number;
+    color: string;
+}
+
+export interface ProjectStatusData {
+    name: string;
+    value: number;
+    color: string;
+}
+
+export interface WorkspaceProductivityData {
+    name: string;
+    completed: number;
+    total: number;
+}
