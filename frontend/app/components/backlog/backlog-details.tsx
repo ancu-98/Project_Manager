@@ -572,9 +572,9 @@ const ActivityRowItem = ({
 
   const navigate = useNavigate();
 
-  const handleActivityClick = () => {
+  const handleActivityClick = (activityId: string) => {
     navigate(
-      `/workspaces/${project.workspace}/projects/${project._id}/backlog/activities/${activity._id}`
+      `/workspaces/${project.workspace}/projects/${project._id}/backlog/activities/${activityId}`
     );
   };
 
@@ -665,7 +665,7 @@ const ActivityRowItem = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={handleActivityClick} >Edit Activity</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleActivityClick(activity._id)} >Edit Activity</DropdownMenuItem>
                 {isOnBacklog ? (
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
