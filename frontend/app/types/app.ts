@@ -22,6 +22,7 @@ export interface Workspace {
         role: 'admin' | 'member' | 'owner' | 'viewer';
         joinedAt: Date;
     }[];
+    projects?: Project[] ;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -48,7 +49,7 @@ export interface Project {
         user: User;
         role: 'admin' | 'member' | 'owner' | 'viewer';
     }[];
-    // tags: string;
+    tags: string[];
     createdBy: User;
     isArchived: boolean;
     createdAt: Date;
@@ -189,6 +190,7 @@ export type ActionType =
     | "added_member"
     | "removed_member"
     | "joined_workspace"
+    | "rejected_join_request"
     | "transferred_workspace_ownership"
     | "added_attachment"
 
@@ -254,4 +256,15 @@ export interface WorkspaceProductivityData {
     name: string;
     completed: number;
     total: number;
+}
+
+export interface WorkspaceJoinRequest {
+  _id: string;
+  user: User;
+  workspaceId: string;
+  token: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
 }

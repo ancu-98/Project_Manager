@@ -69,3 +69,12 @@ export const updateStartSprintSchema = z.object({
     finishDay: z.string().min(1, 'Start date is required'),
     sprintGoal: z.string().optional(),
 })
+
+export const inviteMemberSchema = z.object({
+    email: z.string().email(),
+    role: z.enum(["admin", "member", "viewer"]),
+});
+
+export const rejectJoinRequestSchema = z.object({
+    reason: z.string().min(1, 'Reazon join reject is required')
+})

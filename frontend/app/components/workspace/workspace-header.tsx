@@ -23,7 +23,7 @@ export const WorkspaceHeader = ({
   onInviteMember,
 }: WorkspaceHeaderProps) => {
   return (
-    <div className="'space-y-8">
+    <div className="'space-y-8 py-4">
       <div className="space-y-3">
 
         <div className="flex flex-col-reverse md:flex-row md:justify-between md:items-center gap-3">
@@ -32,7 +32,7 @@ export const WorkspaceHeader = ({
               <WorkspaceAvatar color={workspace.color} name={workspace.name} />
             )}
 
-            <h2 className="text-x1 md:text-2xl font-semibold">
+            <h2 className="font-semibold text-x1 md:text-3x1">
               {workspace.name}
             </h2>
           </div>

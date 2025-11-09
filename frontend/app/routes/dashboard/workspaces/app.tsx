@@ -25,7 +25,7 @@ const Workspaces = () => {
 
   return (
     <>
-      <div className="space-y-8">
+      <div className="space-y-6 py-4 px-2">
         <div className="flex items-center justify-between">
           <h2 className="text-x1 md:text-3x1 font-bold"> Workspaces </h2>
 

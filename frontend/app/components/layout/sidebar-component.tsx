@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   ListCheck,
   LogOut,
+  LucideTelescope,
   Settings,
   Users,
   Wrench,
@@ -33,7 +34,12 @@ export const SideBarComponent = ({
       icon: LayoutDashboard,
     },
     {
-      title: "Workspaces",
+      title: "Explore",
+      href: "/workspaces/explore-workspaces",
+      icon: LucideTelescope,
+    },
+    {
+      title: "My Workspaces",
       href: "/workspaces",
       icon: Users,
     },
@@ -83,7 +89,7 @@ export const SideBarComponent = ({
         <Button
           variant={'ghost'}
           size='icon'
-          className={`ml-auto hidden md:block ${isCollapsed ? 'hover:bg-transparent' : ''}`}
+          className={`ml-auto px-2 hidden md:block ${isCollapsed ? 'hover:bg-transparent' : ''}`}
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           {
@@ -96,7 +102,7 @@ export const SideBarComponent = ({
         </Button>
       </div>
 
-      <ScrollArea className="felx-1 pz-3 py-2" >
+      <ScrollArea className="flex-1 px-3 py-2" >
         <SidebarNav
           items={navItems}
           isCollapsed={isCollapsed}
@@ -112,7 +118,7 @@ export const SideBarComponent = ({
           onClick={logout}
         >
           <LogOut className={cn('size-4', isCollapsed && 'mr-2')} />
-          <span className="hidden md:block" >Logout</span>
+          <span className="hidden md:block">Logout</span>
         </Button>
       </div>
 

@@ -25,6 +25,23 @@ export default [
             "workspaces/:workspaceId/projects/:projectId/backlog/activities/:activityId",
             "routes/dashboard/activity/activity-details.tsx"
         ),
+        route(
+            "workspaces/explore-workspaces",
+            "routes/dashboard/workspaces/explore-workspaces.tsx"
+        ),
+        route(
+            "workspaces/explore-workspaces/public/:workspaceId",
+            "routes/dashboard/workspaces/public-workspace-details.tsx"
+        ),
     ]),
+    route(
+        "workspace-invite/:workspaceId",
+        "routes/dashboard/workspaces/workspace-invite.tsx"
+    ),
+    route(
+        "workspace-join-requests/:workspaceId",
+        "routes/dashboard/workspaces/workspace-join-request.tsx"
+    )
+
 
 ] satisfies RouteConfig;

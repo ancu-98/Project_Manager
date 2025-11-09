@@ -33,7 +33,7 @@ const Dashboard = () => {
 
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
 
-  const { data, isPending } = useGetWorkspaceStatsQuery(workspaceId!) as {
+  const { data, isPending } = useGetWorkspaceStatsQuery(workspaceId! || '') as {
     data: {
       stats: StatsCardProps;
       activityTrendData: ActivityTrendData[];
