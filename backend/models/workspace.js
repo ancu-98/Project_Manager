@@ -24,7 +24,8 @@ const workspaceModel = new mongoose.Schema({
             joinedAt: {type: Date, default: Date.now}
         },
     ],
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project'}]
+    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project'}],
+    isArchived: {type: Boolean, default: false },
 
 },{ timestamps: true });
 

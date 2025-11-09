@@ -28,6 +28,20 @@ const emailSchema = z.object({
     email: z.string().email('Invalid email address'),
 });
 
+const inviteMemberSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  role: z.enum(["admin", "member", "viewer"]),
+});
+
+const tokenSchema = z.object({
+  token: z.string().min(1, "Token is required"),
+});
+
+const rejectJoinRequestTokenSchema = z.object({
+  token: z.string().min(1, "Token is required"),
+  reason: z.string().min(1, 'Reazon join reject is required')
+});
+
 const workspaceSchema = z.object({
     name: z.string().min(1,'Name is required'),
     description: z.string().optional(),
@@ -80,6 +94,9 @@ export {
     verifyEmailSchema,
     resetPasswordSchema,
     emailSchema,
+    inviteMemberSchema,
+    tokenSchema,
+    rejectJoinRequestTokenSchema,
     workspaceSchema,
     projectSchema,
     activitySchema,
