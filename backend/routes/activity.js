@@ -3,9 +3,11 @@ import { validateRequest } from 'zod-express-middleware'
 import authMiddleware from '../middleware/auth.middleware.js';
 import { z } from 'zod';
 import { activitySchema } from '../libs/validate.schema.js';
-import { achievedActivity, addComment, addSubTask, createActivity, getActivityById, getCommentsByActivityId, getHistoryByResourceId, updateActivityAssigneesStatus, updateActivityDescription, updateActivityPriority, updateActivityStatus, updateActivityTitle, updateSubTask, watchActivity } from '../controllers/activity.js';
+import { achievedActivity, addComment, addSubTask, createActivity, getActivityById, getCommentsByActivityId, getHistoryByResourceId, getMyActivities, updateActivityAssignees, updateActivityDescription, updateActivityPriority, updateActivityStatus, updateActivityTitle, updateSubTask, watchActivity } from '../controllers/activity.js';
 
 const router = express.Router();
+
+router.get('/my-activities', authMiddleware, getMyActivities);
 
 router.post(
     '/:projectId/backlog/create-activity',
@@ -61,23 +63,13 @@ router.put(
 )
 
 router.put(
-    '/:activityId/status',
-    authMiddleware,
-    validateRequest({
-        params: z.object({activityId: z.string()}),
-        body: z.object({status: z.string()})
-    }),
-    updateActivityStatus
-)
-
-router.put(
     '/:activityId/assignees',
     authMiddleware,
     validateRequest({
         params: z.object({activityId: z.string()}),
         body: z.object({assignees: z.array(z.string())})
     }),
-    updateActivityAssigneesStatus
+    updateActivityAssignees
 )
 
 router.put(
@@ -170,8 +162,6 @@ router.post(
     }),
     achievedActivity
 )
-
-
 
 export default router;
 

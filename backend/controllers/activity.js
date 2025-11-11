@@ -329,7 +329,7 @@ const updateActivityStatus = async (req, res) => {
   }
 };
 
-const updateActivityAssigneesStatus = async (req, res) => {
+const updateActivityAssignees = async (req, res) => {
   try {
     const { activityId } = req.params;
     const { assignees } = req.body;
@@ -850,13 +850,36 @@ const achievedActivity = async (req, res) => {
   }
 };
 
+const getMyActivities = async (req, res) => {
+  try {
+    const activities = await Activity.find({assignees: {$in: [req.user._id]}})
+      .populate({
+        path: 'backlog',
+        select: 'project',
+        populate: {
+          path: 'project',
+          select: 'title workspace'
+        }
+      })
+      .sort({ createdAt: -1 })
+
+    res.status(200).json(activities);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
 export {
   createActivity,
   getActivityById,
   updateActivityTitle,
   updateActivityDescription,
   updateActivityStatus,
-  updateActivityAssigneesStatus,
+  updateActivityAssignees,
   updateActivityPriority,
   addSubTask,
   updateSubTask,
@@ -865,4 +888,5 @@ export {
   addComment,
   watchActivity,
   achievedActivity,
+  getMyActivities
 };
