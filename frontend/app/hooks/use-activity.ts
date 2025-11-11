@@ -223,3 +223,10 @@ export const useAchievedActivityMutation = () => {
     },
   });
 }
+
+export const useGetMyActivitiesQuery = () => {
+  return useQuery({
+    queryKey: ['my-activities', 'user'],
+    queryFn: () => fetchData('/activities/my-activities'),
+  })
+}

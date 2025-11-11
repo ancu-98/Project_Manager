@@ -44,8 +44,8 @@ export const SideBarComponent = ({
       icon: Users,
     },
     {
-      title: "My Tasks",
-      href: "/my-tasks",
+      title: "My Activities",
+      href: "/my-activities",
       icon: ListCheck,
     },
     {

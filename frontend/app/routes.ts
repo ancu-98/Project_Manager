@@ -33,6 +33,7 @@ export default [
             "workspaces/explore-workspaces/public/:workspaceId",
             "routes/dashboard/workspaces/public-workspace-details.tsx"
         ),
+        route('my-activities', 'routes/dashboard/my-activities.tsx'),
     ]),
     route(
         "workspace-invite/:workspaceId",
