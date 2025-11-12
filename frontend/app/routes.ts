@@ -34,6 +34,9 @@ export default [
             "routes/dashboard/workspaces/public-workspace-details.tsx"
         ),
         route('my-activities', 'routes/dashboard/my-activities.tsx'),
+        route('members', 'routes/dashboard/members.tsx'),
+        // route('achieved', 'routes/dashboard/achieved.tsx'),
+        route('settings', 'routes/dashboard/settings.tsx'),
     ]),
     route(
         "workspace-invite/:workspaceId",

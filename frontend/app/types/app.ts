@@ -192,6 +192,7 @@ export type ActionType =
     | "joined_workspace"
     | "rejected_join_request"
     | "transferred_workspace_ownership"
+    | "deleted_workspace"
     | "added_attachment"
 
 export interface HistoryLog {

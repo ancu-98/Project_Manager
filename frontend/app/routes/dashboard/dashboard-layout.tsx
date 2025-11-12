@@ -5,8 +5,8 @@ import { CreateWorkspace } from '@/components/workspace/create-workspace';
 import { fetchData } from '@/lib/fetch-util';
 import { useAuth } from '@/provider/auth.context';
 import type { Workspace } from '@/types/app';
-import React, { useState } from 'react';
-import { Navigate, Outlet } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Navigate, Outlet, useLoaderData } from 'react-router';
 
 export const clientLoader = async() => {
   try {
@@ -20,12 +20,25 @@ export const clientLoader = async() => {
 
 const DashboardLayout = () => {
     const { isAuthenticated, isLoading} = useAuth();
+    // Obtener workspaces del Loader
+    const { workspaces } = useLoaderData() as {workspaces: Workspace[]}
 
     const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
-
     const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(
       null
     );
+
+    useEffect(() => {
+      if(currentWorkspace && workspaces) {
+        // Buscar el workspace actualizado en la lista de workspaces
+        const updatedWorkspace = workspaces.find(ws => ws._id === currentWorkspace._id);
+        if (updatedWorkspace &&
+            (updatedWorkspace.name !== currentWorkspace.name ||
+             updatedWorkspace.color !== currentWorkspace.color)) {
+          setCurrentWorkspace(updatedWorkspace);
+        }
+      }
+    }, [workspaces, currentWorkspace])
 
     if (isLoading) {
       return <Loader />;

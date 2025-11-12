@@ -7,7 +7,7 @@ export const useCreateSprintMutation = () => {
 
   return useMutation({
     mutationFn: (projectId: string) =>
-      postData(`sprints/${projectId}/backlog/create-sprint`, {}),
+      postData(`/sprints/${projectId}/backlog/create-sprint`, {}),
     onSuccess: (_, projectId) => {
       queryClient.invalidateQueries({
         queryKey: ["project", projectId],
@@ -23,7 +23,7 @@ export const useUpdateStarSprintMutation = (projectId: string) => {
     mutationFn: (data: {
       sprintId: string;
       sprintData: UpdateStartSprintFormData;
-    }) => updateData(`sprints/${data.sprintId}`, data.sprintData),
+    }) => updateData(`/sprints/${data.sprintId}`, data.sprintData),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["project", projectId],

@@ -67,7 +67,7 @@ const StartSprintDialog = ({
     useEffect(() => {
     if (open && sprint.isStarted) {
       form.reset({
-        sprintName: sprint.sprintName || "SCRUM Sprin",
+        sprintName: sprint.sprintName || "SCRUM Sprint",
         duration: sprint.duration  || "customized",
         startDay: sprint.startDay ? new Date(sprint.startDay).toISOString() : "",
         finishDay: sprint.finishDay ? new Date(sprint.finishDay).toISOString() : "",

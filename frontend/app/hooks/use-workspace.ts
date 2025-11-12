@@ -1,6 +1,8 @@
 import type { WorkspaceForm } from "@/components/workspace/create-workspace";
-import { fetchData, postData } from "@/lib/fetch-util";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import type { UpdateWorkspaceFormData } from "@/components/workspace/update-workspace";
+import { deleteData, fetchData, postData, updateData } from "@/lib/fetch-util";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRevalidator } from "react-router";
 
 export const useCreateWorkspace = () => {
   return useMutation({
@@ -124,5 +126,61 @@ export const useGetPendingJoinRequestQuery = (workspaceId: string) => {
     queryFn: async () =>
       fetchData(`/workspaces/${workspaceId}/join-request`),
     enabled: !!workspaceId, // Solo ejecutar si workspaceId existe
+  });
+};
+
+export const useUpdateWorkspaceMutation = (workspaceId: string) => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+    mutationFn: (data: {
+      workspaceId: string;
+      workspaceData: UpdateWorkspaceFormData;
+    }) => updateData(`/workspaces/${data.workspaceId}/update-workspace`, data.workspaceData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspace', workspaceId]}),
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    }
+   })
+}
+
+export const useTransferWorkspaceOwnerMutation = (workspaceId: string) => {
+  const queryClient = useQueryClient();
+  const revalidator = useRevalidator();
+
+  return useMutation({
+    mutationFn: (newOwnerId: string) =>
+      updateData(`/workspaces/${workspaceId}/transfer-workspace-owner`, {
+        newOwnerId
+      }),
+    onSuccess: (data) => {
+      // Invalidar y actualizar queries relacionadas
+      queryClient.invalidateQueries({ queryKey: ['workspace', workspaceId] });
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+      // Revalidar loaders de React Router
+      revalidator.revalidate();
+    },
+  });
+};
+
+
+export const useDeleteWorkspaceMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (workspaceId: string) =>
+      deleteData(`/workspaces/${workspaceId}/delete-workspace`),
+    onSuccess: () => {
+      // Invalidar todas las queries relacionadas con workspaces
+      queryClient.invalidateQueries({
+        queryKey: ['workspaces']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['my-workspaces']
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['workspace']
+      });
+    },
   });
 };

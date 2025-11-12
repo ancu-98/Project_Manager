@@ -70,10 +70,6 @@ const ActivityDetails = () => {
     (watcher) => watcher._id.toString() === user?._id.toString()
   );
 
-  const goBack = () => navigate(-1);
-
-  const members = activity?.assignees || [];
-
   const handleWatchActivity = () => {
     watchActivity(
       { activityId: activity._id },
