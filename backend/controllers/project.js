@@ -105,62 +105,6 @@ const getProjectBacklogDetails = async (req, res) => {
   }
 };
 
-// const getProjectBacklogActivities = async (req, res) => {
-//   try {
-//     const { projectId } = req.params;
-//     const project = await Project.findById(projectId).populate("members.user");
-
-//     if (!project) {
-//       return res.status(404).json({
-//         message: "Project not found",
-//       });
-//     }
-
-//     const isMember = project.members.some(
-//       (member) => member.user._id.toString() === req.user._id.toString()
-//     );
-
-//     if (!isMember) {
-//       return res.status(403).json({
-//         message: "You are not a member of this workspace",
-//       });
-//     }
-
-//     const backlog = await Backlog.findById(project.backlog)
-//       .populate({path: 'activities'})
-//       .populate({
-//         path: "sprints",
-//         populate: {
-//           path: "activities",
-//         },
-//       });
-
-//     const backlogActivities = await Activity.find({
-//       backlog: backlog._id,
-//       isArchived: false,
-//     })
-//       .populate("assignees", "name profilePicture")
-//       .sort({ createdAt: -1 });
-
-//     const backlogSprints = await Sprint.find({
-//       backlog: backlog._id,
-//       isArchived: false,
-//     });
-
-//     res.status(200).json({
-//       project,
-//       backlog,
-//       backlogActivities,
-//       backlogSprints,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       message: "Internal server error",
-//     });
-//   }
-// };
-
 const getProjectBacklogActivities = async (req, res) => {
   try {
     const { projectId } = req.params;

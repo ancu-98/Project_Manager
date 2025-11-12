@@ -1,12 +1,13 @@
 import express from 'express';
 import { validateRequest } from 'zod-express-middleware';
-import { inviteMemberSchema, rejectJoinRequestTokenSchema, tokenSchema, workspaceSchema } from '../libs/validate.schema.js';
+import { inviteMemberSchema, rejectJoinRequestTokenSchema, tokenSchema, transferWorkspaceOwnerSchema, updateWorkspaceSchema, workspaceSchema } from '../libs/validate.schema.js';
 import authMiddleware from '../middleware/auth.middleware.js';
 import {
   acceptGenerateInvite,
   acceptInviteByToken,
   acceptJoinRequestByToken,
   createWorkspace,
+  deleteWorkspace,
   getAllWorkspaces,
   getPendingJoinRequest,
   getPendingJoinRequests,
@@ -18,7 +19,9 @@ import {
   getWorkspaceStats,
   inviteUserToWorkspace,
   joinRequestToWorkspace,
-  rejectJoinRequestByToken
+  rejectJoinRequestByToken,
+  transferWorkspaceOwner,
+  updateWorkspace
 } from '../controllers/workspace.js'
 import { z } from 'zod';
 
@@ -101,8 +104,36 @@ router.get('/explore-workspaces/public/:workspaceId/projects', authMiddleware, g
 router.get('/:workspaceId', authMiddleware, getWorkspaceDetails);
 router.get('/:workspaceId/projects', authMiddleware, getWorkspaceProjects);
 
-
 router.get('/:workspaceId/stats', authMiddleware, getWorkspaceStats);
+
+router.put(
+    '/:workspaceId/update-workspace',
+    authMiddleware,
+    validateRequest({
+        params: z.object({workspaceId: z.string()}),
+        body: updateWorkspaceSchema
+    }),
+    updateWorkspace
+)
+
+router.put(
+  '/:workspaceId/transfer-workspace-owner',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ workspaceId: z.string() }),
+    body: transferWorkspaceOwnerSchema
+  }),
+  transferWorkspaceOwner
+);
+
+router.delete(
+  '/:workspaceId/delete-workspace',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ workspaceId: z.string() }),
+  }),
+  deleteWorkspace
+);
 
 
 export default router;

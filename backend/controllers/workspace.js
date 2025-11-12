@@ -7,6 +7,9 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from '../libs/send.email.js';
 import { recordHistory } from "../libs/app.js";
 import WorkspaceJoinRequest from "../models/workspace-join-request.js";
+import Activity from "../models/activity.js";
+import Sprint from "../models/sprint.js"
+import Comment from "../models/comment.js";
 
 
 const createWorkspace = async (req, res) => {
@@ -937,6 +940,7 @@ const acceptJoinRequestByToken = async(req, res) => {
   }
 }
 
+//TODO:Implement in Settings
 const acceptJoinRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
@@ -1116,6 +1120,7 @@ const rejectJoinRequestByToken = async(req, res) => {
   }
 }
 
+//TODO:Implement in Settings
 const rejectJoinRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
@@ -1252,6 +1257,266 @@ const getPendingJoinRequest = async (req, res) => {
   }
 }
 
+const updateWorkspace = async (req, res) => {
+  try {
+    const { workspaceId } = req.params;
+    const { name, color, description } = req.body;
+
+    const workspace = await Workspace.findById(workspaceId);
+
+    if (!workspace) {
+      return res.status(404).json({
+        message: "Workspace not found",
+      });
+    }
+
+    // Encontrar la información del miembro actual
+    const userMemberInfo = workspace.members.find(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    // Verificar que el usuario es miembro del workspace
+    if (!userMemberInfo) {
+      return res.status(403).json({
+        message: "You are not a member of this workspace",
+      });
+    }
+
+    //Only owners and admins can make changes.
+    if (!["owner", "admin"].includes(userMemberInfo.role)) {
+      return res.status(403).json({
+        message: "You don't have permission to update this workspace.",
+      });
+    }
+
+    const oldName = workspace.name;
+    const oldColor = workspace.color;
+
+    const oldDescription =
+      workspace.description.substring(0, 50) +
+      (workspace.description.length > 50 ? "..." : "");
+
+    const newDescription =
+      workspace.description.substring(0, 50) +
+      (workspace.description.length > 50 ? "..." : "");
+
+    workspace.name = name;
+    workspace.color = color;
+    workspace.description = description;
+    await workspace.save();
+
+    // record History
+    await recordHistory(
+      req.user._id,
+      "updated_workspace",
+      "Workspace",
+      workspaceId,
+      {
+        description: `updated workspace from:
+          - name: ${oldName} to ${name}
+          - color: ${oldColor} to ${color}
+          - description ${oldDescription} to ${newDescription}`,
+      }
+    );
+
+    res.status(200).json(workspace);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+const transferWorkspaceOwner = async (req, res) => {
+  try {
+    const { workspaceId } = req.params;
+    const { newOwnerId } = req.body;
+
+    // 1. Verificar que el workspace existe
+    const workspace = await Workspace.findById(workspaceId);
+
+    if (!workspace) {
+      return res.status(404).json({
+        message: "Workspace not found",
+      });
+    }
+
+    // 2. Verificar que el usuario actual es el owner
+    if (workspace.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        message: "Only the workspace owner can transfer ownership",
+      });
+    }
+
+    // 3. Verificar que el nuevo owner existe y es miembro del workspace
+    const newOwnerMember = workspace.members.find(
+      member => member.user.toString() === newOwnerId
+    );
+
+    if (!newOwnerMember) {
+      return res.status(400).json({
+        message: "The selected user is not a member of this workspace",
+      });
+    }
+
+    // 4. Verificar que no se está transfiriendo al mismo usuario
+    if (newOwnerId === req.user._id.toString()) {
+      return res.status(400).json({
+        message: "You are already the owner of this workspace",
+      });
+    }
+
+    // 5. Guardar el owner anterior para el historial
+    const previousOwnerId = workspace.owner;
+
+    // 6. Actualizar el owner del workspace
+    workspace.owner = newOwnerId;
+
+    // 7. Actualizar los roles en el array de miembros
+    workspace.members = workspace.members.map(member => {
+      if (member.user.toString() === newOwnerId) {
+        // Nuevo owner se convierte en owner
+        return { ...member.toObject(), role: 'owner' };
+      } else if (member.user.toString() === req.user._id.toString()) {
+        // Owner anterior se convierte en admin
+        return { ...member.toObject(), role: 'admin' };
+      }
+      return member;
+    });
+
+    await workspace.save();
+
+    // 8. Registrar en el historial
+    await Promise.all([
+      recordHistory(
+        req.user._id,
+        "transferred_workspace_ownership",
+        "Workspace",
+        workspaceId,
+        {
+          description: `Transferred workspace ownership to ${newOwnerMember.user?.name || 'new owner'}`,
+          targetUser: newOwnerId
+        }
+      ),
+      recordHistory(
+        newOwnerId,
+        "received_workspace_ownership",
+        "Workspace",
+        workspaceId,
+        {
+          description: `Received workspace ownership from ${req.user.name}`,
+          targetUser: req.user._id
+        }
+      )
+    ]);
+
+    // 9. Populate para devolver el workspace actualizado
+    const updatedWorkspace = await Workspace.findById(workspaceId)
+      .populate('owner', 'name email profilePicture')
+      .populate('members.user', 'name email profilePicture');
+
+    res.status(200).json({
+      workspace: updatedWorkspace
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+const deleteWorkspace = async (req, res) => {
+  try {
+    const { workspaceId } = req.params;
+
+    // 1. Verificar que el workspace exista
+    const workspace = await Workspace.findById(workspaceId);
+
+    if (!workspace) {
+      return res.status(404).json({
+        message: "Workspace not found",
+      });
+    }
+
+    // 2. Verificar que el usuario es el owner del workspace
+    const ownerMember = workspace.members.find(
+      (member) =>
+        member.user.toString() === req.user._id.toString() &&
+        member.role === 'owner'
+    );
+
+    if (!ownerMember) {
+      return res.status(403).json({
+        message: "Only the workspace owner can delete the workspace",
+      });
+    }
+
+    // 3. Obtener todos los proyectos del workspace
+    const projects = await Project.find({ workspace: workspaceId });
+    const projectIds = projects.map(project => project._id);
+
+    // 4. Obtener todos los backlogs de estos proyectos
+    const backlogs = await Backlog.find({ project: { $in: projectIds } });
+    const backlogIds = backlogs.map(backlog => backlog._id);
+
+    // 5. Obtener todas las actividades de estos backlogs
+    const activities = await Activity.find({ backlog: { $in: backlogIds } });
+    const activityIds = activities.map(activity => activity._id);
+
+    // 6. Obtener todos los sprints de estos backlogs
+    const sprints = await Sprint.find({ backlog: { $in: backlogIds } });
+    const sprintIds = sprints.map(sprint => sprint._id);
+
+    // 7. Obtener todos los comentarios de estas actividades
+    const comments = await Comment.find({ activity: { $in: activityIds } });
+    const commentIds = comments.map(comment => comment._id);
+
+    // 8. Eliminar en cascada (en orden inverso para mantener referencias)
+    await Promise.all([
+      // Eliminar comentarios
+      Comment.deleteMany({ _id: { $in: commentIds } }),
+
+      // Eliminar actividades
+      Activity.deleteMany({ _id: { $in: activityIds } }),
+
+      // Eliminar sprints
+      Sprint.deleteMany({ _id: { $in: sprintIds } }),
+
+      // Eliminar backlogs
+      Backlog.deleteMany({ _id: { $in: backlogIds } }),
+
+      // Eliminar proyectos
+      Project.deleteMany({ _id: { $in: projectIds } }),
+
+      // Finalmente eliminar el workspace
+      Workspace.deleteOne({ _id: workspaceId }),
+
+      // Registrar en el historial
+      recordHistory(
+        req.user._id,
+        "deleted_workspace",
+        "Workspace",
+        workspaceId,
+        {
+          description: `Deleted workspace: ${workspace.name} and all related data`,
+        }
+      )
+    ]);
+
+    res.status(200).json({
+      message: "Workspace and all related data deleted successfully",
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 export {
   createWorkspace,
   getWorkspaces,
@@ -1268,6 +1533,8 @@ export {
   acceptJoinRequestByToken,
   rejectJoinRequestByToken,
   getPendingJoinRequests,
-  getPendingJoinRequest
-
+  getPendingJoinRequest,
+  updateWorkspace,
+  transferWorkspaceOwner,
+  deleteWorkspace
 };

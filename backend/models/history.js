@@ -28,6 +28,7 @@ const historyLogSchema = new mongoose.Schema(
         "accepted_join_request",
         "rejected_join_request",
         "transferred_workspace_ownership",
+        "deleted_workspace",
         "added_attachment",
       ],
     },

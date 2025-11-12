@@ -88,6 +88,16 @@ const updateStartSprintSchema = z.object({
     sprintGoal: z.string(),
 })
 
+const updateWorkspaceSchema = z.object({
+    name: z.string(),
+    color: z.string(),
+    description: z.string()
+})
+
+const transferWorkspaceOwnerSchema = z.object({
+    newOwnerId: z.string().min(1, "New owner ID is required")
+})
+
 export {
     registerSchema,
     loginSchema,
@@ -100,6 +110,8 @@ export {
     workspaceSchema,
     projectSchema,
     activitySchema,
-    updateStartSprintSchema
+    updateStartSprintSchema,
+    updateWorkspaceSchema,
+    transferWorkspaceOwnerSchema
 };
 
