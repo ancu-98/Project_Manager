@@ -18,6 +18,7 @@ const historyLogSchema = new mongoose.Schema(
         "completed_activity",
         "created_project",
         "updated_project",
+        "deleted_project",
         "completed_project",
         "created_workspace",
         "updated_workspace",

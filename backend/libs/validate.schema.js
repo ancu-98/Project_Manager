@@ -69,6 +69,20 @@ const projectSchema = z.object({
     ).optional(),
 });
 
+const updateProjectSchema = z.object({
+    title: z.string().optional(),
+    description: z.string().optional() ,
+    status: z.enum([
+        'Planning',
+        'In Progress',
+        'On Hold',
+        'Completed',
+        'Cancelled',
+    ]).optional(),
+    startDate: z.string().optional(),
+    dueDate: z.string().optional(),
+    tags: z.string().optional(),
+})
 
 const activitySchema = z.object({
     typeOf: z.enum(['Epic', 'Story', 'Task', 'Subtask']),
@@ -112,6 +126,7 @@ export {
     activitySchema,
     updateStartSprintSchema,
     updateWorkspaceSchema,
-    transferWorkspaceOwnerSchema
+    transferWorkspaceOwnerSchema,
+    updateProjectSchema
 };
 
