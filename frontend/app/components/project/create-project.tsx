@@ -252,7 +252,7 @@ export const CreateProjectDialog = ({
               name="tags"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tags</FormLabel>
+                  <FormLabel>Tags - Place the project technologies here</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Tags separated by coma" />
                   </FormControl>

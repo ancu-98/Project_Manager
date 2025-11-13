@@ -10,12 +10,10 @@ const ProjectSummary = ({
   project,
   backlog,
 }: ProjectSummaryProps) => {
-  
-
 
   return (
     <div>
-
+      Project Summary
     </div>
   )
 }

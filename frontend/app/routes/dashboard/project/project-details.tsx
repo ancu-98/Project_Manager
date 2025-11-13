@@ -5,12 +5,15 @@ import type {
   Project,
 } from "@/types/app";
 import { useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import ProjectKanban from "@/components/project/project-kanban";
 import ProjectSummary from "@/components/project/project-summary";
 import BacklogDetails from "@/components/backlog/backlog-details";
 import { useProjectBacklogActivitiesQuery } from "@/hooks/use-project";
 import ProjectProgress from "@/components/project/project-progress";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 const ProjectDetails = () => {
@@ -56,11 +59,23 @@ const ProjectDetails = () => {
               </div>
             </div>
 
-            <ProjectProgress
-              backlogSprints={data.backlog.sprints as any}
-              backlogActivities={data.backlog.activities as any}
-            />
+            <div className="flex flex-row gap-2">
+              <ProjectProgress
+                backlogSprints={data.backlog.sprints as any}
+                backlogActivities={data.backlog.activities as any}
+              />
 
+              <Tooltip>
+                <TooltipTrigger>
+                  <Link to={`/workspaces/${data.project.workspace}/projects/${data.project._id}/backlog/settings`}>
+                    <Button variant={'ghost'}>
+                      <Settings className="size-5"/>
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>Project Settings</TooltipContent>
+              </Tooltip>
+            </div>
           </div>
 
           {/* Tabs*/}

@@ -8,10 +8,10 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
 interface DeleteWorksapceProps {
-  workspace: Workspace;
+  workspaceId: string;
 }
 
-const DeleteWorkspace = ({ workspace }: DeleteWorksapceProps) => {
+const DeleteWorkspace = ({ workspaceId }: DeleteWorksapceProps) => {
   const [isDeletingWorkspace, setIsDeletingWorkspace] = useState(false);
   return (
     <div className="mt-2">
@@ -34,7 +34,7 @@ const DeleteWorkspace = ({ workspace }: DeleteWorksapceProps) => {
       <DeleteWorkspaceDialog
         isOpen={isDeletingWorkspace}
         onOpenChange={setIsDeletingWorkspace}
-        workspaceId={workspace._id}
+        workspaceId={workspaceId}
       />
     </div>
   );

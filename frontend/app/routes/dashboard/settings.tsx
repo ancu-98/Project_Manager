@@ -57,7 +57,7 @@ const WorkspaceSettings = () => {
 
         <TransferWorkspaceOwner key={data._id} workspace={data}/>
 
-        <DeleteWorkspace key={data._id} workspace={data}/>
+        <DeleteWorkspace key={data._id} workspaceId={data._id}/>
     </div>
   );
 };

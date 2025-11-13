@@ -49,7 +49,7 @@ export interface Project {
         user: User;
         role: 'admin' | 'member' | 'owner' | 'viewer';
     }[];
-    tags: string[];
+    tags: string;
     createdBy: User;
     isArchived: boolean;
     createdAt: Date;

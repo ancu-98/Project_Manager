@@ -22,6 +22,10 @@ export default [
             "routes/dashboard/project/project-details.tsx"
         ),
         route(
+            "workspaces/:workspaceId/projects/:projectId/backlog/settings",
+            "routes/dashboard/project/project-settings.tsx"
+        ),
+        route(
             "workspaces/:workspaceId/projects/:projectId/backlog/activities/:activityId",
             "routes/dashboard/activity/activity-details.tsx"
         ),

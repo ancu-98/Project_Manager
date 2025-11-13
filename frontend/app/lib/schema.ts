@@ -58,6 +58,15 @@ export const projectSchema = z.object({
     ).optional(),
 });
 
+export const updateProjectSchema = z.object({
+    title: z.string().optional(),
+    description: z.string().optional() ,
+    status: z.nativeEnum(ProjectStatus),
+    startDate: z.string().optional(),
+    dueDate: z.string().optional(),
+    tags: z.string().optional(),
+})
+
 export const createActivitySchema = z.object({
     typeOf: z.enum(['Epic', 'Story', 'Task', 'Subtask']),
     title: z.string().min(1, 'Activity title is required'),
