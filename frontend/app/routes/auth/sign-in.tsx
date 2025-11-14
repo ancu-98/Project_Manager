@@ -61,10 +61,10 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen min-w-screen flex flex-col items-center justify-center bg-gray-600 p-4">
-      <Card className="max-w-md w-auto bg-gray-950 shadow-accent">
+    <div className="min-h-screen min-w-screen flex flex-col items-center justify-cente p-4">
+      <Card className="max-w-md w-auto shadow-accent">
         <CardHeader className="text-center mb-5">
-          <CardTitle className="text-2x1 font-bold shadow-x1 text-white">
+          <CardTitle className="text-2x1 font-bold shadow-x1">
             Welcome back
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground">

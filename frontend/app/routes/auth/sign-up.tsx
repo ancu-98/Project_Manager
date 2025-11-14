@@ -75,26 +75,24 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-600 p-4">
+    <div className="min-h-screen w-full flex flex-col items-center justify-cente p-4">
       <Tabs defaultValue="account" className="w-full max-w-sm sm:max-w-md md:max-w-lg">
-        <TabsList className="bg-gray-950">
+        <TabsList>
           <TabsTrigger
             value="account"
-            className="data-[state=active]:bg-gray-500/20 data-[state=active]:border-gray-400/20 data-[state=active]:text-white text-muted-foreground"
           >
             Account
           </TabsTrigger>
           <TabsTrigger
             value="university"
-            className="data-[state=active]:bg-gray-500/20 data-[state=active]:border-gray-400/20 data-[state=active]:text-white text-muted-foreground"
           >
             University
           </TabsTrigger>
         </TabsList>
         <TabsContent value="account" className="w-auto">
-          <Card className="w-full max-w-sm sm:max-w-md bg-gray-950 shadow-accent">
+          <Card className="w-full max-w-sm sm:max-w-md shadow-accent">
             <CardHeader className="text-center sm:mb-5 px-4 sm:px-6" >
-              <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+              <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold">
                 Create an acount
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground">
@@ -191,9 +189,9 @@ const SignUp = () => {
         </TabsContent>
 
         <TabsContent value="university" className="">
-          <Card className="w-full max-w-sm sm:max-w-md bg-gray-950 shadow-accent">
+          <Card className="w-full max-w-sm sm:max-w-m shadow-accent">
             <CardHeader className="text-center mb-3 sm:mb-5 px-4 sm:px-6">
-              <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+              <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold">
                 Create an acount
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground">
@@ -281,19 +279,19 @@ const SignUp = () => {
                               <SelectTrigger className="w-full border-gray-200/20 text-muted-foreground">
                                 <SelectValue placeholder="Select" className="text-muted-foreground" />
                               </SelectTrigger>
-                              <SelectContent className="bg-gray-950/90 border-gray-200/20 max-h-[280px] overflow-y-auto">
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white" value="1">1</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="2">2</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="3">3</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="4">4</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="5">5</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="6">6</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="7">7</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="8">8</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="9">9</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="10">10</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="11">11</SelectItem>
-                                <SelectItem className="text-muted-foreground focus:border-gray-400/20 focus:bg-gray-500/20 focus:text-white"value="12">12</SelectItem>
+                              <SelectContent className=" border-gray-200/20 max-h-[280px] overflow-y-auto">
+                                <SelectItem value="1">1</SelectItem>
+                                <SelectItem value="2">2</SelectItem>
+                                <SelectItem value="3">3</SelectItem>
+                                <SelectItem value="4">4</SelectItem>
+                                <SelectItem value="5">5</SelectItem>
+                                <SelectItem value="6">6</SelectItem>
+                                <SelectItem value="7">7</SelectItem>
+                                <SelectItem value="8">8</SelectItem>
+                                <SelectItem value="9">9</SelectItem>
+                                <SelectItem value="10">10</SelectItem>
+                                <SelectItem value="11">11</SelectItem>
+                                <SelectItem value="12">12</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
