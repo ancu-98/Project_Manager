@@ -26,9 +26,7 @@ const ProjectSettings = () => {
   }
 
   const workspaceId = data.project.workspace.toString()
-  
-  console.log(data.project);
-  console.log(workspaceId)
+
   return (
     <div className="mx-auto py-2 px-2 sm:py-4 md:px-4 max-w-[640px]">
       <UpdateProject key={data.project._id} project={data.project} />

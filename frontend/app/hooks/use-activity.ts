@@ -1,6 +1,6 @@
 import type { CreateActivityFormData } from "@/components/activity/create-activity-dialog";
 import { fetchData, postData, updateData } from "@/lib/fetch-util";
-import type { ActivityPriority, ActivityStatus } from "@/types/app";
+import type { ActivityPriority, ActivityStatus, TypeOfActivity } from "@/types/app";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateActivityMutation = () => {
@@ -27,6 +27,15 @@ export const useGetActivityByIdQuery = (activityId: string) => {
   return useQuery({
     queryKey: ["activity", activityId],
     queryFn: () => fetchData(`/activities/${activityId}`),
+  });
+};
+
+export const useGetPrincipalActivityQuery = (activityId: string) => {
+  return useQuery({
+    queryKey: ['activity-principal', activityId],
+    queryFn: async () =>
+      fetchData(`/activities/${activityId}/principal`),
+    enabled: !!activityId, // Solo ejecutar si activityId existe
   });
 };
 
@@ -73,6 +82,25 @@ export const useUpdateActivityStatusMutation = () => {
     mutationFn: (data: { activityId: string; status: ActivityStatus }) =>
       updateData(`/activities/${data.activityId}/status`, {
         status: data.status,
+      }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["activity", data._id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["activity-history", data._id],
+      });
+    },
+  });
+};
+
+export const useUpdateTypeOfActivityMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { activityId: string; typeOf: TypeOfActivity }) =>
+      updateData(`/activities/${data.activityId}/typeOf`, {
+        typeOf: data.typeOf,
       }),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
@@ -230,3 +258,60 @@ export const useGetMyActivitiesQuery = () => {
     queryFn: () => fetchData('/activities/my-activities'),
   })
 }
+
+export const useAddRelatedActivityMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { activityId: string; relatedActivityId: string }) =>
+      postData(`/activities/${data.activityId}/add-related-activity`, {
+        relatedActivityId: data.relatedActivityId,
+      }),
+    onSuccess: (data, variables) => {
+      // Invalidar queries específicas
+      queryClient.invalidateQueries({
+        queryKey: ["activity", variables.activityId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["activity-history", variables.activityId]
+      });
+
+      // También podrías invalidar la query de la actividad relacionada si es necesario
+      queryClient.invalidateQueries({
+        queryKey: ["activity", variables.relatedActivityId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["activity-principal", variables.relatedActivityId]
+      });
+    },
+  });
+};
+
+// Hook para eliminar actividades relacionadas
+export const useRemoveRelatedActivityMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { activityId: string; relatedActivityId: string }) =>
+      postData(`/activities/${data.activityId}/remove-related-activity`, {
+        relatedActivityId: data.relatedActivityId,
+      }),
+    onSuccess: (data, variables) => {
+      // Invalidar queries específicas
+      queryClient.invalidateQueries({
+        queryKey: ["activity", variables.activityId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["activity-history", variables.activityId]
+      });
+
+      // También podrías invalidar la query de la actividad relacionada si es necesario
+      queryClient.invalidateQueries({
+        queryKey: ["activity", variables.relatedActivityId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["activity-principal", variables.relatedActivityId]
+      });
+    },
+  });
+};

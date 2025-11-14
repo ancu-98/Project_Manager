@@ -11,6 +11,7 @@ const activitySchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     description: { type: String, trim: true },
     relatedActivities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
+    isRelatedActivity: {type: Boolean, default: false},
     backlog: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Backlog",

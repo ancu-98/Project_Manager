@@ -3,7 +3,7 @@ import { validateRequest } from 'zod-express-middleware'
 import authMiddleware from '../middleware/auth.middleware.js';
 import { z } from 'zod';
 import { activitySchema } from '../libs/validate.schema.js';
-import { achievedActivity, addComment, addSubTask, createActivity, getActivityById, getCommentsByActivityId, getHistoryByResourceId, getMyActivities, updateActivityAssignees, updateActivityDescription, updateActivityPriority, updateActivityStatus, updateActivityTitle, updateSubTask, watchActivity } from '../controllers/activity.js';
+import { achievedActivity, addComment, addRelatedActivity, addSubTask, createActivity, getActivityById, getCommentsByActivityId, getHistoryByResourceId, getMyActivities, getPrincipalActivity, removeRelatedActivity, updateActivityAssignees, updateActivityDescription, updateActivityPriority, updateActivityStatus, updateActivityTitle, updateSubTask, updateTypeOfActivity, watchActivity } from '../controllers/activity.js';
 
 const router = express.Router();
 
@@ -31,6 +31,17 @@ router.get(
     }),
     getActivityById
 )
+
+router.get(
+  '/:activityId/principal',
+  authMiddleware,
+  validateRequest({
+    params: z.object({
+      activityId: z.string(),
+    }),
+  }),
+  getPrincipalActivity
+);
 
 router.put(
     '/:activityId/title',
@@ -162,6 +173,46 @@ router.post(
     }),
     achievedActivity
 )
+
+router.post(
+    '/:activityId/add-related-activity',
+    authMiddleware,
+    validateRequest({
+        params: z.object({
+            activityId: z.string(),
+        }),
+        body: z.object({
+            relatedActivityId: z.string(),
+        }),
+    }),
+    addRelatedActivity
+)
+
+router.post(
+    '/:activityId/remove-related-activity',
+    authMiddleware,
+    validateRequest({
+        params: z.object({
+            activityId: z.string(),
+        }),
+        body: z.object({
+            relatedActivityId: z.string(),
+        }),
+    }),
+    removeRelatedActivity
+)
+
+router.put(
+    '/:activityId/typeOf',
+    authMiddleware,
+    validateRequest({
+        params: z.object({activityId: z.string()}),
+        body: z.object({typeOf: z.string()})
+    }),
+    updateTypeOfActivity
+)
+
+
 
 export default router;
 

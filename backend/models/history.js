@@ -13,6 +13,10 @@ const historyLogSchema = new mongoose.Schema(
       enum: [
         "created_activity",
         "updated_activity",
+        "added_related_activity",
+        "set_as_principal_activity",
+        "removed_from_principal",
+        "removed_from_principal",
         "created_subtask",
         "updated_subtask",
         "completed_activity",

@@ -114,6 +114,7 @@ export interface Activity {
     title: string;
     description?: string;
     relatedActivities?: Activity[];
+    isRelatedActivity: boolean;
     backlog: Backlog;
     isOnBacklog: boolean;
     status: ActivityStatus;

@@ -69,6 +69,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getActivityTypeOfsymbols } from "@/lib/app";
 import { cn } from "@/lib/utils";
+import { useGetPrincipalActivityQuery } from "@/hooks/use-activity";
+import { Loader } from "../loader";
 
 interface BacklogDetailsProps {
   project: Project;
@@ -145,7 +147,7 @@ const BacklogDetails = ({
         {/* Div para sprints */}
         <div className="space-y-4">
           {backlogSprints.length == 0 ? (
-            <div>Hola</div>
+            <div></div>
           ) : (
             backlogSprints.map((sprint) => (
               <ProjectSprint
@@ -583,36 +585,67 @@ const ActivityRowItem = ({
   );
   const Icon = activityType?.symbol;
 
+  const { data } = useGetPrincipalActivityQuery(activity._id) as {
+    data: {
+      principalActivity: Activity;
+    };
+  };
+
+  const principalActivity = data?.principalActivity || null;
+
+  // Sólo obtener el ícono si existe la actividad principal
+  const activityType2 = principalActivity
+    ? getActivityTypeOfsymbols(principalActivity.typeOf as TypeOfActivity)
+    : null;
+  const Icon2 = activityType2?.symbol;
+
   return (
     <Item variant="outline" className="h-12 py-1">
-      <ItemContent className="items-center align-middle" >
+      <ItemContent className="items-center align-middle">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <Tooltip>
             <TooltipTrigger>
-              <ItemMedia className={cn("rounded p-1.5 mb-1", activityType?.color)}>
+              <ItemMedia
+                className={cn("rounded p-1.5 mb-1", activityType?.color)}
+              >
                 {Icon && <Icon className="size-4" />}
               </ItemMedia>
             </TooltipTrigger>
             <TooltipContent>{activity.typeOf}</TooltipContent>
           </Tooltip>
-          <div className="min-w-0 flex-1 flex flex-row gap-2" >
-            <ItemTitle className="truncate min-w-24">{activity.title}</ItemTitle>
-              {activity.description && (
-                <ItemDescription className="line-clamp-1 text-sm text-muted-foreground">
-                  {activity.description}
-                </ItemDescription>
-              )}
+          <div className="min-w-0 flex-1 flex flex-row gap-2">
+            <ItemTitle className="truncate min-w-24">
+              {activity.title}
+            </ItemTitle>
+            {activity.description && (
+              <ItemDescription className="line-clamp-1 text-sm text-muted-foreground">
+                {activity.description}
+              </ItemDescription>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Tooltip>
-            <TooltipTrigger>
-              <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300">
-                PRINCIPAL
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>principal activity</TooltipContent>
-          </Tooltip>
+          {principalActivity ? (
+            <Tooltip>
+              <TooltipTrigger>
+                <ItemMedia
+                className={cn("rounded p-1.5 mb-1", activityType?.color)}
+              >
+                {Icon2 && <Icon2 className="size-4" />}{principalActivity.title}
+              </ItemMedia>
+              </TooltipTrigger>
+              <TooltipContent>principal activity</TooltipContent>
+            </Tooltip>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger>
+                <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300">
+                  PRINCIPAL
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent>principal activity</TooltipContent>
+            </Tooltip>
+          )}
           <Tooltip>
             <TooltipTrigger>
               <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300">
@@ -655,7 +688,7 @@ const ActivityRowItem = ({
         </div>
       </ItemContent>
       <ItemSeparator />
-      <ItemActions className="pb-0.5" >
+      <ItemActions className="pb-0.5">
         <ButtonGroup>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -665,7 +698,11 @@ const ActivityRowItem = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => handleActivityClick(activity._id)} >Edit Activity</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleActivityClick(activity._id)}
+                >
+                  Edit Activity
+                </DropdownMenuItem>
                 {isOnBacklog ? (
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
@@ -700,10 +737,6 @@ const ActivityRowItem = ({
                     Return to Backlog
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem variant="destructive">
-                  <Trash2Icon />
-                  Achive
-                </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>

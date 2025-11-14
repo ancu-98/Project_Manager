@@ -32,7 +32,7 @@ export const ActivityPrioritySelector = ({
 
   return (
     <Select value={priority || ""} onValueChange={handlePriorityChange}>
-      <SelectTrigger className="w-[180px]" disabled={isPending}>
+      <SelectTrigger className="w-[180px] mt-1" disabled={isPending}>
         <SelectValue placeholder="Priority" />
       </SelectTrigger>
 
