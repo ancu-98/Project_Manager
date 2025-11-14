@@ -39,7 +39,7 @@ export default [
         ),
         route('my-activities', 'routes/dashboard/my-activities.tsx'),
         route('members', 'routes/dashboard/members.tsx'),
-        // route('achieved', 'routes/dashboard/achieved.tsx'),
+        route('achieved', 'routes/dashboard/achieved.tsx'),
         route('settings', 'routes/dashboard/settings.tsx'),
     ]),
     route(
