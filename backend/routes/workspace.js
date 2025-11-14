@@ -8,6 +8,7 @@ import {
   acceptJoinRequestByToken,
   createWorkspace,
   deleteWorkspace,
+  getAchievedData,
   getAllWorkspaces,
   getPendingJoinRequest,
   getPendingJoinRequests,
@@ -115,6 +116,8 @@ router.put(
     }),
     updateWorkspace
 )
+
+router.get( '/:workspaceId/achieved-data', authMiddleware, getAchievedData)
 
 router.put(
   '/:workspaceId/transfer-workspace-owner',

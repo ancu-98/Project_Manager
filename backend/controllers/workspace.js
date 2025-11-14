@@ -10,6 +10,7 @@ import WorkspaceJoinRequest from "../models/workspace-join-request.js";
 import Activity from "../models/activity.js";
 import Sprint from "../models/sprint.js"
 import Comment from "../models/comment.js";
+import { achievedSprint } from "./sprint.js";
 
 
 const createWorkspace = async (req, res) => {
@@ -511,6 +512,7 @@ const getWorkspaceStats = async (req, res) => {
     res.status(500).json({ message: "Internal Server error" });
   }
 };
+
 
 const inviteUserToWorkspace = async (req, res) => {
   try {
@@ -1517,6 +1519,209 @@ const deleteWorkspace = async (req, res) => {
   }
 };
 
+// const getAchievedData = async (req, res) => {
+//   try {
+//     const { workspaceId } = req.params;
+
+//     const workspace = await Workspace.findById(workspaceId);
+
+//     if (!workspace) {
+//       return res.status(404).json({
+//         message: "Workspace not found",
+//       });
+//     }
+
+//     const isMember = workspace.members.some(
+//       (member) => member.user.toString() === req.user._id.toString()
+//     );
+
+//     if (!isMember) {
+//       return res.status(403).json({
+//         message: "You are not a member of this workspace",
+//       });
+//     }
+
+//     // Obtener proyectos del workspace
+//     const projects = await Project.find({
+//       workspace: workspaceId,
+//     })
+//       .populate({
+//         path: "backlog",
+//         populate: [
+//           {
+//             path: "activities",
+//             match: { isArchived: true },
+//             populate: {
+//               path: "assignees",
+//               select: "name email profilePicture",
+//             },
+//           },
+//           {
+//             path: "sprints",
+//             match: { isArchived: true },
+//             populate: {
+//               path: "activities",
+//               populate: {
+//                 path: "assignees",
+//                 select: "name email profilePicture",
+//               },
+//             },
+//           },
+//         ],
+//       })
+//       .select("title description tags createdAt");
+
+//     console.log(projects)
+
+//     // Filtrar proyectos que tienen elementos archivados
+//     const projectsWithArchivedData = projects
+//       .map((project) => {
+//         const archivedActivities = project.backlog?.activities || [];
+//         const archivedSprints = project.backlog?.sprints || [];
+
+//         // Solo incluir proyectos que tienen al menos un elemento archivado
+//         if (archivedActivities.length > 0 || archivedSprints.length > 0) {
+//           return {
+//             _id: project._id,
+//             title: project.title,
+//             description: project.description,
+//             tags: project.tags,
+//             createdAt: project.createdAt,
+//             archivedActivities,
+//             archivedSprints,
+//           };
+//         }
+//         return null;
+//       })
+//       .filter((project) => project !== null);
+
+//     res.status(200).json({
+//       workspace: {
+//         _id: workspace._id,
+//         name: workspace.name,
+//       },
+//       projects: projectsWithArchivedData,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       message: "Internal server error",
+//     });
+//   }
+// };
+
+// Función auxiliar para obtener IDs de finishedSprints
+
+async function getFinishedSprintsIds(backlogIds) {
+  const backlogs = await Backlog.find({ _id: { $in: backlogIds } })
+    .select("finishedSprints");
+  return backlogs.flatMap(backlog => backlog.finishedSprints || []);
+}
+
+const getAchievedData = async (req, res) => {
+  try {
+    const { workspaceId } = req.params;
+
+    const workspace = await Workspace.findById(workspaceId);
+
+    if (!workspace) {
+      return res.status(404).json({
+        message: "Workspace not found",
+      });
+    }
+
+    const isMember = workspace.members.some(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "You are not a member of this workspace",
+      });
+    }
+
+    // Obtener proyectos del workspace con sus backlogs
+    const projects = await Project.find({
+      workspace: workspaceId,
+    })
+      .populate({
+        path: "backlog",
+        select: "activities sprints finishedSprints",
+      })
+      .select("title description tags createdAt");
+
+    // Obtener todos los IDs de backlogs
+    const backlogIds = projects
+      .map(project => project.backlog?._id)
+      .filter(id => id);
+
+    // Buscar actividades archivadas directamente del backlog
+    const archivedActivities = await Activity.find({
+      backlog: { $in: backlogIds },
+      isArchived: true
+    }).populate({
+      path: "assignees",
+      select: "name email profilePicture",
+    });
+
+    // Buscar sprints archivados (tanto de sprints activos como finishedSprints)
+    const archivedSprints = await Sprint.find({
+      $or: [
+        { backlog: { $in: backlogIds }, isArchived: true },
+        { _id: { $in: await getFinishedSprintsIds(backlogIds) } }
+      ]
+    }).populate({
+      path: "activities",
+      populate: {
+        path: "assignees",
+        select: "name email profilePicture",
+      },
+    });
+
+    // Organizar los datos por proyecto
+    const projectsWithArchivedData = projects
+      .map((project) => {
+        if (!project.backlog) return null;
+
+        const projectArchivedActivities = archivedActivities.filter(
+          activity => activity.backlog.toString() === project.backlog._id.toString()
+        );
+
+        const projectArchivedSprints = archivedSprints.filter(
+          sprint => sprint.backlog.toString() === project.backlog._id.toString()
+        );
+
+        // Solo incluir proyectos que tienen al menos un elemento archivado
+        if (projectArchivedActivities.length > 0 || projectArchivedSprints.length > 0) {
+          return {
+            _id: project._id,
+            title: project.title,
+            description: project.description,
+            tags: project.tags,
+            createdAt: project.createdAt,
+            archivedActivities: projectArchivedActivities,
+            archivedSprints: projectArchivedSprints,
+          };
+        }
+        return null;
+      })
+      .filter((project) => project !== null);
+
+    res.status(200).json({
+      workspace: {
+        _id: workspace._id,
+        name: workspace.name,
+      },
+      projects: projectsWithArchivedData,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 export {
   createWorkspace,
   getWorkspaces,
@@ -1536,5 +1741,6 @@ export {
   getPendingJoinRequest,
   updateWorkspace,
   transferWorkspaceOwner,
-  deleteWorkspace
+  deleteWorkspace,
+  getAchievedData
 };
